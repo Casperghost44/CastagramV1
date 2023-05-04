@@ -13,13 +13,18 @@ namespace CastagramV1.Controllers
         private readonly DBContext _db;
         private readonly UserManager<User> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILikeRepository _likeRepository;
+        private readonly ICommentRepository _commentRepository;
 
-        public PostController(IPostRepository postRepository, DBContext db, UserManager<User> userManager, IWebHostEnvironment webHostEnvironment)
+        public PostController(IPostRepository postRepository, DBContext db, UserManager<User> userManager, IWebHostEnvironment webHostEnvironment, ILikeRepository likeRepository, ICommentRepository commentRepository)
         {
             _postRepository = postRepository;
             _db = db;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
+            _likeRepository = likeRepository;
+            _commentRepository = commentRepository;
+
         }
 
         [AllowAnonymous]
@@ -27,6 +32,10 @@ namespace CastagramV1.Controllers
         public async Task<IActionResult> Index()
         {
             var posts = await _postRepository.GetAllPostsAsync();
+            var likes = await _likeRepository.GetAllLikesAsync();
+            likes = likes.ToList();
+            var LikesCount = likes.Count();
+            ViewBag.Count = LikesCount;
             return View(posts);
         }
 
@@ -131,6 +140,22 @@ namespace CastagramV1.Controllers
         {
             
             await _postRepository.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> AddLike(int? id)
+        {
+            var post = await _postRepository.GetPostAsync(id);
+            var CurrUser = await _userManager.GetUserAsync(User);
+            var like = new Like()
+            {
+                Post = post,
+                PostId = post.Id,
+                dateTime = DateTime.Now,
+                Author = CurrUser,
+                AuthorId = CurrUser.Id
+            };
+            
             return RedirectToAction(nameof(Index));
         }
 

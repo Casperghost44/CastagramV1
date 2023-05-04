@@ -30,10 +30,8 @@ namespace CastagramV1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AuthorId1")
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Comments")
@@ -47,7 +45,7 @@ namespace CastagramV1.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId1");
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("PostId");
 
@@ -62,10 +60,8 @@ namespace CastagramV1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AuthorId1")
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("PostId")
@@ -76,7 +72,7 @@ namespace CastagramV1.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId1");
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("PostId");
 
@@ -326,7 +322,9 @@ namespace CastagramV1.Migrations
                 {
                     b.HasOne("CastagramV1.Models.User", "Author")
                         .WithMany("Comments")
-                        .HasForeignKey("AuthorId1");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CastagramV1.Models.Post", "Post")
                         .WithMany("Comment")
@@ -341,7 +339,9 @@ namespace CastagramV1.Migrations
                 {
                     b.HasOne("CastagramV1.Models.User", "Author")
                         .WithMany("Likes")
-                        .HasForeignKey("AuthorId1");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CastagramV1.Models.Post", "Post")
                         .WithMany("Likes")

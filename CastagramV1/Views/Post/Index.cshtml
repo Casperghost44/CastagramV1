@@ -14,7 +14,42 @@
         <a asp-action="Create">Create New</a>
     </p>
 }
-<table class="table">
+
+<div>
+    @foreach (var item in Model)
+    {
+        <div>
+            <div>
+                <a href="/Post/OtherPosts?userid=@item.AuthorId">@await UserManager.FindByIdAsync(item.AuthorId)</a>
+                @Html.DisplayFor(modelItem => item.dateTime)
+            </div>
+            <div>
+                <img src="@item.ImagePath" width="100" height="100"/>
+            </div>
+            <div>
+                <p>
+                    @Html.DisplayFor(modelItem => item.Description);
+                </p>
+                <div>
+                    
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="AddLike" asp-route-id="@item.Id">Like</a>
+                        @if(item.Likes == null)
+                        {
+                            <p>0</p>
+                        }
+                        else
+                        {
+                            <p>@ViewBag.Count</p>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -59,7 +94,30 @@
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                     </td>
                 }
+                <td>
+                    <button>Like</button>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                    
+                            @if (item.Likes == null)
+                            {
+                                <div>
+                                @Html.Display("0")
+                                ;
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                @Html.DisplayFor(modelitem => item.Likes.Count)
+                                ;
+                            </div>
+                        }
+
+                }
+                </td>
+
             </tr>
 }
     </tbody>
-</table>
+</table>*@

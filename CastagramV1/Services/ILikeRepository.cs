@@ -5,7 +5,8 @@ namespace CastagramV1.Services
     public interface ILikeRepository
     {
         Task AddAsync(Like newLike);
-        Task DeleteAsync(Like like);
+        Task DeleteAsync(int? id);
         Task<IEnumerable<Like>> GetAllLikesAsync();
+        Task<Like> GetLikeAsync(int? id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CastagramV1.Models;
 using CastagramV1.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CastagramV1.Repositories
 {
@@ -15,7 +16,6 @@ namespace CastagramV1.Repositories
         {
             var like = new Like()
             {
-                Id = newLike.Id,
                 Author = newLike.Author,
                 AuthorId = newLike.AuthorId,
                 dateTime = newLike.dateTime,
@@ -26,16 +26,24 @@ namespace CastagramV1.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(Like like)
+        public async Task DeleteAsync(int? id)
         {
-            _db.Likes.Remove(like);
-            _db.SaveChanges();
-            return Task.CompletedTask;
+            var entity = await _db.Set<Like>().FirstOrDefaultAsync(e => e.Id == id);
+            EntityEntry entityEntry = _db.Entry<Like>(entity);
+            entityEntry.State = EntityState.Deleted;
+
+            await _db.SaveChangesAsync(); ;
         }
 
         public async Task<IEnumerable<Like>> GetAllLikesAsync()
         {
             return await _db.Likes.AsQueryable().ToListAsync();
+        }
+        public async Task<Like> GetLikeAsync(int? id)
+        {
+            return await _db.Likes.AsQueryable()
+                .Where(e => e.Id == id)
+                .SingleAsync();
         }
     }
 }
