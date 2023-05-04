@@ -1,0 +1,41 @@
+﻿@model IEnumerable<CastagramV1.Models.Post>
+
+@{
+    ViewData["Title"] = "OtherPosts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>OtherPosts</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.dateTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    <img src="@item.ImagePath" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.dateTime)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

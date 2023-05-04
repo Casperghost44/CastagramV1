@@ -1,0 +1,65 @@
+﻿@model IEnumerable<CastagramV1.Models.Post>
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<User> UserManager;
+
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>View</h1>
+@if (User.Identity.IsAuthenticated)
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Author.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.dateTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img src="@item.ImagePath"/>
+            </td>
+            <td>
+                    <a href="/Post/OtherPosts?userid=@item.AuthorId">@await UserManager.FindByIdAsync(item.AuthorId)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.dateTime)
+            </td>
+            <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+                @if(UserManager.GetUserId(User) == item.Author.Id)
+                {
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    </td>
+                }
+            </tr>
+}
+    </tbody>
+</table>
