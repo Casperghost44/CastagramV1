@@ -34,9 +34,11 @@ namespace CastagramV1.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<IEnumerable<Comment>> GetAllCommentsAsync()
+        public async Task<IEnumerable<Comment>> GetAllCommentsAsync(int? postid)
         {
-            return await _db.Comments.AsQueryable().ToListAsync();
+            return await _db.Comments.AsQueryable()
+                .Where(e => e.PostId == postid)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(Comment comment)

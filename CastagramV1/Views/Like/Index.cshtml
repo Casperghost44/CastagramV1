@@ -1,0 +1,16 @@
+﻿@model IEnumerable<CastagramV1.Models.Like>
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<User> UserManager;
+<div>
+    <div>
+        @foreach(var item in Model)
+        {
+            <div>
+                <div>
+                    <a href="/Post/OtherPosts?userid=@item.AuthorId">@await UserManager.FindByIdAsync(item.AuthorId)</a>
+                    @Html.DisplayFor(modelItem => item.dateTime)
+                </div>
+            </div>
+        }
+    </div>
+</div>

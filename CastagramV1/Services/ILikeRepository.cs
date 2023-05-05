@@ -6,7 +6,7 @@ namespace CastagramV1.Services
     {
         Task AddAsync(Like newLike);
         Task DeleteAsync(int? id);
-        Task<IEnumerable<Like>> GetAllLikesAsync();
-        Task<Like> GetLikeAsync(int? id);
+        Task<IEnumerable<Like>> GetAllLikesAsync(int? id);
+        Task<Like> GetLikeAsync(int? id, string? userid);
     }
 }

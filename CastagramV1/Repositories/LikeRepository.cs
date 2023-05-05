@@ -35,15 +35,19 @@ namespace CastagramV1.Repositories
             await _db.SaveChangesAsync(); ;
         }
 
-        public async Task<IEnumerable<Like>> GetAllLikesAsync()
-        {
-            return await _db.Likes.AsQueryable().ToListAsync();
-        }
-        public async Task<Like> GetLikeAsync(int? id)
+        public async Task<IEnumerable<Like>> GetAllLikesAsync(int? id)
         {
             return await _db.Likes.AsQueryable()
-                .Where(e => e.Id == id)
-                .SingleAsync();
+                .Where(e => e.PostId == id)
+                .ToListAsync();
+        }
+        public async Task<Like> GetLikeAsync(int? postid, string? userid)
+        {
+            return await _db.Likes.AsQueryable()
+                .Where(e => e.PostId == postid)
+                .Where(o => o.AuthorId == userid)
+                .SingleOrDefaultAsync();
+
         }
     }
 }

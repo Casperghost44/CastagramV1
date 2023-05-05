@@ -10,6 +10,60 @@
 <h1>Details</h1>
 
 <div>
+    <div>
+        <a href="/Post/OtherPosts?userid=@Model.AuthorId">@await UserManager.FindByIdAsync(Model.AuthorId)</a>
+        @Html.DisplayFor(modelItem => Model.dateTime)
+    </div>
+    <div>
+        <img src="@Model.ImagePath" width="100" height="100" />
+    </div>
+    <div>
+        <p>
+            @Html.DisplayFor(modelItem => Model.Description);
+        </p>
+        <div>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-action="AddLike" asp-route-id="@Model.Id">Like</a>
+                @if (Model.Likes == null)
+                {
+                    <p>0</p>
+                }
+                else
+                {
+                    <a href="/Like/Index?id=@Model.Id">@Model.Likes.Count</a>
+                }
+            }
+        </div>
+        <div>
+            @if (UserManager.GetUserId(User) == Model.Author.Id)
+            {
+                <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+            }
+        </div>
+    </div>
+    <div>
+        @if(Model.Comment != null)
+        {
+            @foreach (var item in Model.Comment)
+            {
+                <div>
+                    <a href="/Post/OtherPosts?userid=@item?.AuthorId">@await UserManager.FindByIdAsync(item.AuthorId)</a>
+                    @Html.DisplayFor(modelItem => item.dateTime)
+                </div>
+                <div>
+                    @Html.DisplayFor(modelItem => item.Comments)
+                </div>
+                
+            }
+        }
+        <a href="/Comment/Create?postid=@Model.Id">Comment!</a>
+    </div>
+</div>
+
+@*<div>
     <h4>Post</h4>
     <hr />
     <dl class="row">
@@ -41,3 +95,4 @@
      |
     <a asp-action="Index">Back to List</a>
 </div>
+*@

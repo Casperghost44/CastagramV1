@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<CastagramV1.Models.Post>
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<User> UserManager;
 
 @{
     ViewData["Title"] = "OtherPosts";
@@ -7,8 +9,49 @@
 
 <h1>OtherPosts</h1>
 
+<div>
+    @foreach (var item in Model)
+    {
+        <div>
+            <div>
+                <P>@await UserManager.FindByIdAsync(item.AuthorId)</P>
+                @Html.DisplayFor(modelItem => item.dateTime)
+            </div>
+            <div>
+                <img src="@item.ImagePath" width="100" height="100" />
+            </div>
+            <div>
+                <p>
+                    @Html.DisplayFor(modelItem => item.Description);
+                </p>
+                <div>
 
-<table class="table">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="AddLike" asp-route-id="@item.Id">Like</a>
+                        @if (item.Likes == null)
+                        {
+                            <p>0</p>
+                        }
+                        else
+                        {
+                            <a href="/Like/Index?id=@item.Id">@item.Likes.Count</a>
+                        }
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </div>
+                <div>
+                    @if (UserManager.GetUserId(User) == item.Author.Id)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -38,4 +81,4 @@
         </tr>
 }
     </tbody>
-</table>
+</table>*@

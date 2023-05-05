@@ -23,6 +23,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Index">Feed</a>
                         </li>
                     </ul>
+                    <form class="d-flex" asp-controller="Post" asp-action="Search">
+                        <input name="searchString" class="form-control me-sm-2" type="text" placeholder="Search">
+                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                    </form>
                     <partial name="_Indetity.cshtml" />
                 </div>
             </div>

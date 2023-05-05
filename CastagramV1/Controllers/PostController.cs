@@ -4,6 +4,8 @@ using CastagramV1.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace CastagramV1.Controllers
 {
@@ -32,11 +34,23 @@ namespace CastagramV1.Controllers
         public async Task<IActionResult> Index()
         {
             var posts = await _postRepository.GetAllPostsAsync();
-            var likes = await _likeRepository.GetAllLikesAsync();
-            likes = likes.ToList();
-            var LikesCount = likes.Count();
-            ViewBag.Count = LikesCount;
+           
             return View(posts);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Search(string searchString)
+        {
+            var Posts = await _postRepository.GetAllPostsAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var filteredResultNew = Posts.Where(p => p.Description.Contains("#" + searchString)).ToList();
+
+                return View("Index", filteredResultNew);
+            }
+
+            return View("Index");
         }
 
         public IActionResult Create()
@@ -100,6 +114,8 @@ namespace CastagramV1.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             var post = await _postRepository.GetPostAsync(id);
+            var comments = await _commentRepository.GetAllCommentsAsync(id);
+            
             return View(post);
         }
 
@@ -147,17 +163,27 @@ namespace CastagramV1.Controllers
         {
             var post = await _postRepository.GetPostAsync(id);
             var CurrUser = await _userManager.GetUserAsync(User);
-            var like = new Like()
+            var CurrLike = await _likeRepository.GetLikeAsync(id, CurrUser.Id);
+            if(CurrLike == null)
             {
-                Post = post,
-                PostId = post.Id,
-                dateTime = DateTime.Now,
-                Author = CurrUser,
-                AuthorId = CurrUser.Id
-            };
+                var like = new Like()
+                {
+                    Post = post,
+                    PostId = post.Id,
+                    dateTime = DateTime.Now,
+                    Author = CurrUser,
+                    AuthorId = CurrUser.Id
+                };
+                await _likeRepository.AddAsync(like);
+            }
+            else
+            {
+                await _likeRepository.DeleteAsync(CurrLike.Id);
+            }
             
             return RedirectToAction(nameof(Index));
         }
+
 
     }
 }

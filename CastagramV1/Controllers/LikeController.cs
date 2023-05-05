@@ -15,9 +15,10 @@ namespace CastagramV1.Controllers
             _userManager = userManager;
         }
     
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            return View();
+            var likes = await _likeRepository.GetAllLikesAsync(id);
+            return View(likes);
         }
 
 

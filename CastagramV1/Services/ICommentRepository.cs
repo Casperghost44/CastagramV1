@@ -7,6 +7,6 @@ namespace CastagramV1.Services
         Task AddAsync(Comment newComment);
         Task UpdateAsync(Comment comment);
         Task DeleteAsync(Comment comment);
-        Task<IEnumerable<Comment>> GetAllCommentsAsync();
+        Task<IEnumerable<Comment>> GetAllCommentsAsync(int? postid);
     }
 }

@@ -40,13 +40,16 @@ namespace CastagramV1.Repositories
 
         public async Task<IEnumerable<Post>> GetAllPostsAsync()
         {
-            return await _db.Posts.AsQueryable().ToListAsync();
+            return await _db.Posts.AsQueryable()
+                .Include(o => o.Likes)
+                .ToListAsync();
         }
 
 
         public async Task<IEnumerable<Post>> GetAllPostsByUser(string userid)
         {
             return await _db.Posts.AsQueryable()
+                .Include(o => o.Likes)
                 .Where(e => e.AuthorId == userid)
                 .ToListAsync();
         }
@@ -54,6 +57,8 @@ namespace CastagramV1.Repositories
         {
             return await _db.Posts.AsQueryable()
                 .Where(e => e.Id == id)
+                .Include(o => o.Comment)
+                .Include(b => b.Likes)
                 .SingleAsync();
         }
 
