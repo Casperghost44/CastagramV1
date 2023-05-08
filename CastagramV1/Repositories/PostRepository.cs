@@ -35,7 +35,7 @@ namespace CastagramV1.Repositories
             EntityEntry entityEntry = _db.Entry<Post>(entity);
             entityEntry.State = EntityState.Deleted;
 
-            await _db.SaveChangesAsync(); ;
+            await _db.SaveChangesAsync(); 
         }
 
         public async Task<IEnumerable<Post>> GetAllPostsAsync()

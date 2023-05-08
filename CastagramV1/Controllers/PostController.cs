@@ -70,7 +70,9 @@ namespace CastagramV1.Controllers
                 Author = CurrUser,
                 AuthorId = CurrUser.Id,
                 dateTime = DateTime.Now,
-                Description = post.Description
+                Description = post.Description,
+                Comment = post.Comment,
+                Likes = post.Likes
             };
 
             await _postRepository.AddNewAsync(newPost);
@@ -154,7 +156,12 @@ namespace CastagramV1.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            
+            var list = _commentRepository.GetAllCommentsAsync(id);
+            _db.Comments.RemoveRange(await list);
+            _db.SaveChanges();
+            var likes = _likeRepository.GetAllLikesAsync(id);
+            _db.Likes.RemoveRange(await likes);
+            _db.SaveChanges();
             await _postRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }

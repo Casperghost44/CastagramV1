@@ -3,11 +3,11 @@
 @inject UserManager<User> UserManager;
 
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Feed";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>View</h1>
+<h1>Let's what is new today!</h1>
 @if (User.Identity.IsAuthenticated)
 {
     <p>
@@ -15,117 +15,46 @@
     </p>
 }
 
-<div>
+<div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var item in Model)
     {
-        <div>
-            <div>
-                <a href="/Post/OtherPosts?userid=@item.AuthorId">@await UserManager.FindByIdAsync(item.AuthorId)</a>
-                @Html.DisplayFor(modelItem => item.dateTime)
-            </div>
-            <div>
-                <img src="@item.ImagePath" width="100" height="100"/>
-            </div>
-            <div>
-                <p>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </p>
-                <div>
-                    
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a asp-action="AddLike" asp-route-id="@item.Id">Like</a>
-                        @if(item.Likes == null)
-                        {
-                            <p>0</p>
-                        }
-                        else
-                        {
-                            <a href="/Like/Index?id=@item.Id">@item.Likes.Count</a>
-                        }
-                    }
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                </div>
-                <div>
-                    @if (UserManager.GetUserId(User) == item.Author.Id)
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    }
-                </div>
-            </div>
-        </div>
-    }
-</div>
-@*<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.dateTime)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <img src="@item.ImagePath"/>
-            </td>
-            <td>
-                    <a href="/Post/OtherPosts?userid=@item.AuthorId">@await UserManager.FindByIdAsync(item.AuthorId)</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.dateTime)
-            </td>
-            <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-            </td>
-                @if(UserManager.GetUserId(User) == item.Author.Id)
-                {
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    </td>
-                }
-                <td>
-                    <button>Like</button>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                    
-                            @if (item.Likes == null)
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <img src="@item.ImagePath" class="card-img-top" />
+                <div class="card-body">
+                    <a href="/Post/OtherPosts?userid=@item.AuthorId" class="card-title">@await UserManager.FindByIdAsync(item.AuthorId)</a>
+                    <p class="card-subtitle">@Html.Raw(item.dateTime)</p>
+                    <p class="card-text">
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            @if (User.Identity.IsAuthenticated)
                             {
-                                <div>
-                                @Html.Display("0")
-                                ;
-                            </div>
-                        }
-                        else
-                        {
-                            <div>
-                                @Html.DisplayFor(modelitem => item.Likes.Count)
-                                ;
-                            </div>
-                        }
+                                <a asp-action="AddLike" asp-route-id="@item.Id" class="btn btn-outline-dark"><i class="bi bi-heart"></i></a>
+                                @if (item.Likes == null)
+                                {
+                                    <p>0</p>
+                                }
+                                else
+                                {
+                                    <a href="/Like/Index?id=@item.Id" class="btn btn-outline-dark">@item.Likes.Count</a>
+                                }
+                            }
+                        </li>
+                        <li class="list-group-item">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark">Details</a>
+                            @if (UserManager.GetUserId(User) == item.Author.Id)
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-dark">Delete</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-dark">Edit</a>
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </div>
+       </div>
+    }
 
-                }
-                </td>
+</div>
 
-            </tr>
-}
-    </tbody>
-</table>*@

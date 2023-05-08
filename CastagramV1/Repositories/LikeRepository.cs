@@ -32,7 +32,7 @@ namespace CastagramV1.Repositories
             EntityEntry entityEntry = _db.Entry<Like>(entity);
             entityEntry.State = EntityState.Deleted;
 
-            await _db.SaveChangesAsync(); ;
+            await _db.SaveChangesAsync(); 
         }
 
         public async Task<IEnumerable<Like>> GetAllLikesAsync(int? id)
