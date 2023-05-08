@@ -9,90 +9,56 @@
 
 <h1>Details</h1>
 
-<div>
-    <div>
-        <a href="/Post/OtherPosts?userid=@Model.AuthorId">@await UserManager.FindByIdAsync(Model.AuthorId)</a>
-        @Html.DisplayFor(modelItem => Model.dateTime)
-    </div>
-    <div>
-        <img src="@Model.ImagePath" width="100" height="100" />
-    </div>
-    <div>
-        <p>
-            @Html.DisplayFor(modelItem => Model.Description);
-        </p>
-        <div>
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+        <div class="card" style="width: 18rem;">
+            <img src="@Model.ImagePath" class="card-img-top" />
+            <div class="card-body">
+                <a href="/Post/OtherPosts?userid=@Model.AuthorId" class="card-title">@await UserManager.FindByIdAsync(Model.AuthorId)</a>
+                <p class="card-subtitle">@Html.Raw(Model.dateTime)</p>
+                <p class="card-text">
+                    @Html.DisplayFor(modelItem => Model.Description)
+                </p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a asp-action="AddLike" asp-route-id="@Model.Id" class="btn btn-outline-dark">
+                                <i class="bi bi-heart"></i>
+                            </a>
+                            <a href="/Like/Index?id=@Model.Id" class="link-dark">@Model.Likes.Count</a>
 
-            @if (User.Identity.IsAuthenticated)
-            {
-                <a asp-action="AddLike" asp-route-id="@Model.Id">Like</a>
-                @if (Model.Likes == null)
-                {
-                    <p>0</p>
-                }
-                else
-                {
-                    <a href="/Like/Index?id=@Model.Id">@Model.Likes.Count</a>
-                }
-            }
-        </div>
-        <div>
-            @if (UserManager.GetUserId(User) == Model.Author.Id)
-            {
-                <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
-                <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
-            }
+                        }
+                    </li>
+                    <li class="list-group-item">
+
+                        @if (UserManager.GetUserId(User) == Model.Author.Id)
+                        {
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+                        }
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-    <div>
+
+    <div class="col">
         @if(Model.Comment != null)
         {
             @foreach (var item in Model.Comment)
             {
-                <div>
-                    <a href="/Post/OtherPosts?userid=@item?.AuthorId">@await UserManager.FindByIdAsync(item.AuthorId)</a>
-                    @Html.DisplayFor(modelItem => item.dateTime)
-                </div>
-                <div>
-                    @Html.DisplayFor(modelItem => item.Comments)
-                </div>
-                
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <div class="card-header">
+                            <a href="/Post/OtherPosts?userid=@Model.AuthorId" class="card-title">@await UserManager.FindByIdAsync(item.AuthorId)</a>
+                        </div>
+                        <div class="card-body text-dark">
+                            <p class="card-text">@item.Comments</p>
+                        </div>
+                    </div>
             }
         }
-        <a href="/Comment/Create?postid=@Model.Id">Comment!</a>
+            <a href="/Comment/Create?postid=@Model.Id" class="btn btn-outline-dark"><i class="bi bi-chat-dots-fill"></i>Comment!</a>
     </div>
 </div>
 
-@*<div>
-    <h4>Post</h4>
-    <hr />
-    <dl class="row">
-        <dd class = "col-sm-10">
-            <img src="@Model.ImagePath" />
-        </dd>
-        <dt class = "col-sm-2">
-            <a href="/Post/OtherPosts?userid=@Model.AuthorId">@await UserManager.FindByIdAsync(@Model.AuthorId)</a>
-        </dt>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.dateTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.dateTime)
-        </dd>
-    </dl>
-</div>
-<div>
-    @if (UserManager.GetUserId(User) == @Model.Author.Id)
-    {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-    }
-     |
-    <a asp-action="Index">Back to List</a>
-</div>
-*@

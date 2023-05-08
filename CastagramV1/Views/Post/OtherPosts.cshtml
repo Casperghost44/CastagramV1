@@ -3,82 +3,53 @@
 @inject UserManager<User> UserManager;
 
 @{
-    ViewData["Title"] = "OtherPosts";
+    ViewData["Title"] = "Posts";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>OtherPosts</h1>
+@if (UserManager.GetUserId(User) != Model.Last().AuthorId)
+{
+    <h1>@await UserManager.FindByIdAsync(Model.Last().AuthorId)</h1>
+}
+else{
+    <h1>My Posts</h1>
+    <a asp-action="Create" class="btn btn-outline-success"><i class="bi bi-patch-plus-fill"></i></a>
+}
 
-<div>
+<div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var item in Model)
     {
-        <div>
-            <div>
-                <P>@await UserManager.FindByIdAsync(item.AuthorId)</P>
-                @Html.DisplayFor(modelItem => item.dateTime)
-            </div>
-            <div>
-                <img src="@item.ImagePath" width="100" height="100" />
-            </div>
-            <div>
-                <p>
-                    @Html.DisplayFor(modelItem => item.Description);
-                </p>
-                <div>
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <img src="@item.ImagePath" class="card-img-top" />
+                <div class="card-body">
+                    <p class="card-subtitle">@Html.Raw(item.dateTime)</p>
+                    <p class="card-text">
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a asp-action="AddLike" asp-route-id="@item.Id" class="btn btn-outline-dark">
+                                    <i class="bi bi-heart"></i>
+                                </a>
+                                <a href="/Like/Index?id=@item.Id" class="link-dark">@item.Likes.Count</a>
 
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a asp-action="AddLike" asp-route-id="@item.Id">Like</a>
-                        @if (item.Likes == null)
-                        {
-                            <p>0</p>
-                        }
-                        else
-                        {
-                            <a href="/Like/Index?id=@item.Id">@item.Likes.Count</a>
-                        }
-                    }
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                </div>
-                <div>
-                    @if (UserManager.GetUserId(User) == item.Author.Id)
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    }
+                            }
+                        </li>
+                        <li class="list-group-item">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-info-circle-fill"></i></a>
+                            @if (UserManager.GetUserId(User) == item.AuthorId)
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+                            }
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     }
+
 </div>
-@*<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.dateTime)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                    <img src="@item.ImagePath" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.dateTime)
-            </td>
-        </tr>
-}
-    </tbody>
-</table>*@

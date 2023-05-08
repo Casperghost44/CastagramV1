@@ -7,11 +7,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Let's what is new today!</h1>
+<h1>Let's see what is new today!</h1>
 @if (User.Identity.IsAuthenticated)
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create" class="btn btn-outline-success"><i class="bi bi-patch-plus-fill"></i></a>
     </p>
 }
 
@@ -31,23 +31,18 @@
                         <li class="list-group-item">
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <a asp-action="AddLike" asp-route-id="@item.Id" class="btn btn-outline-dark"><i class="bi bi-heart"></i></a>
-                                @if (item.Likes == null)
-                                {
-                                    <p>0</p>
-                                }
-                                else
-                                {
-                                    <a href="/Like/Index?id=@item.Id" class="btn btn-outline-dark">@item.Likes.Count</a>
-                                }
+                                <a asp-action="AddLike" asp-route-id="@item.Id" class="btn btn-outline-dark">
+                                    <i class="bi bi-heart"></i></a>
+                                <a href="/Like/Index?id=@item.Id" class="link-dark">@item.Likes.Count</a>
+                                
                             }
                         </li>
                         <li class="list-group-item">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark">Details</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-info-circle-fill"></i></a>
                             @if (UserManager.GetUserId(User) == item.Author.Id)
                             {
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-dark">Delete</a>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-dark">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
                             }
                         </li>
                     </ul>
